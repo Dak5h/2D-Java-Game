@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import tile.TileManager;
 
 import java.awt.*;
 import javax.swing.JPanel;
@@ -10,23 +11,26 @@ public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16;
     final int scale = 3;
 
-    final int tileSize = originalTileSize * scale;
+    public final int tileSize = originalTileSize * scale;
 
-    final int maxScreenCol = 16; // 16 tiles wide
-    final int maxScreenRow = 12; // 12 tiles tall
-    final int screenWidth = maxScreenCol * tileSize; // 768px
-    final int screenHeight = maxScreenRow * tileSize; // 576px
+    public final int maxScreenCol = 16; // 16 tiles wide
+    public final int maxScreenRow = 12; // 12 tiles tall
+    public final int screenWidth = maxScreenCol * tileSize; // 768px
+    public final int screenHeight = maxScreenRow * tileSize; // 576px
+
+    // World Settings
+    public final int maxWorldCol = 50; // 50 tiles wide
+    public final int maxWorldRow = 50; // 50 tiles tall
+    public final int worldWidth = maxWorldCol * tileSize; // 800px
+    public final int worldHeight = maxWorldRow * tileSize; // 800px
 
     int FPS = 60; // Frames per second
 
-    KeyHandler keyH = new KeyHandler();
+    TileManager tileM = new TileManager(this); // Creates a new tile manager
+    KeyHandler keyH = new KeyHandler(); // Creates a new key handler
     Thread gameThread; // Clock for the game
-    Player player = new Player(this, keyH); // Creates a new player
-
-    // Sets the player's default position
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4;
+    public CollisionChecker cChecker = new CollisionChecker(this); // Creates a new collision checker
+    public Player player = new Player(this, keyH); // Creates a new player
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Set the size of the panel
@@ -67,28 +71,19 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Updates Character Info
     public void update() {
-        // Moves the player based on the key pressed
-        if (keyH.upPressed) {
-            playerY -= playerSpeed;
-        }
-        else if (keyH.downPressed) {
-            playerY += playerSpeed;
-        }
-        else if (keyH.leftPressed) {
-            playerX -= playerSpeed;
-        }
-        else if (keyH.rightPressed) {
-            playerX += playerSpeed;
-        }
+        player.update();
     }
 
     // Draws the Updated Info
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Clears the screen
+        Graphics2D g2 = (Graphics2D) g;
 
-        Graphics2D g2 = (Graphics2D) g; // Casts the graphics object to 2D (Gives more control over Character)
-        g2.setColor(Color.white); // Sets the color to white
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+        // Components drawn in order that they are called
+        tileM.draw(g2); // Draws the tiles
+        player.draw(g2); // Draws the player
+
+
         g2.dispose(); // Disposes of the graphics object
     }
 }
