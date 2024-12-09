@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 import java.awt.*;
@@ -30,7 +31,9 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler(); // Creates a new key handler
     Thread gameThread; // Clock for the game
     public CollisionChecker cChecker = new CollisionChecker(this); // Creates a new collision checker
+    public AssetSetter aSetter = new AssetSetter(this); // Creates a new asset setter
     public Player player = new Player(this, keyH); // Creates a new player
+    public SuperObject obj[] = new SuperObject[10]; // Creates a new object
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Set the size of the panel
@@ -38,6 +41,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true); // Improves rendering performance
         this.addKeyListener(keyH); // Adds the key listener to the panel
         this.setFocusable(true); // Allows the panel to be focused
+    }
+
+    public void setupGame() {
+        aSetter.setObject(); // Sets the object
     }
 
     public void startGameThread() {
@@ -81,6 +88,14 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Components drawn in order that they are called
         tileM.draw(g2); // Draws the tiles
+
+        // Draws the objects
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i] != null) {
+                obj[i].draw(g2, this);
+            }
+        }
+
         player.draw(g2); // Draws the player
 
 
