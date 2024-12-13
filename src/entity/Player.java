@@ -135,7 +135,9 @@ public class Player extends Entity {
                         hasKey--;
                     }
                     break;
-                case "Chest":
+                case "Boots":
+                    speed += 2;
+                    gp.obj[i] = null;
                     break;
             }
         }
