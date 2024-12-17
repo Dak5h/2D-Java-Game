@@ -3,7 +3,6 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,7 +18,7 @@ public class Player extends Entity {
     public final int screenY;
 
     // Number of keys the player has
-    int hasKey = 0;
+    public int hasKey = 0;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -129,18 +128,29 @@ public class Player extends Entity {
                     gp.playSE(1);
                     hasKey++;
                     gp.obj[i] = null;
+                    gp.ui.showMessage("You got a key!");
                     break;
                 case "Door":
                     gp.playSE(3);
                     if (hasKey > 0) {
                         gp.obj[i] = null;
                         hasKey--;
+                        gp.ui.showMessage("You opened the door!");
+                    } else {
+                        gp.ui.showMessage("You need a key!");
                     }
                     break;
                 case "Boots":
                     gp.playSE(2);
                     speed += 2;
                     gp.obj[i] = null;
+                    gp.ui.showMessage("SPEED!!!");
+                    break;
+
+                case "Chest":
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(4);
                     break;
             }
         }
